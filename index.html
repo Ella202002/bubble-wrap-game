@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Bubble Wrap">
+    <meta name="description" content="Pop bubbles and relax! A satisfying bubble wrap popping game for iPhone and all devices.">
+    <meta name="theme-color" content="#667eea">
+
+    <title>Bubble Wrap - Pop & Relax</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Favicon and Apple Touch Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Install Prompt -->
+    <div id="installPrompt" class="install-prompt hidden">
+        <div class="install-content">
+            <span class="install-icon">📱</span>
+            <div class="install-text">
+                <strong>Install Bubble Wrap</strong>
+                <p>Add to home screen for the best experience!</p>
+            </div>
+            <button id="installBtn" class="install-btn">Install</button>
+            <button id="dismissInstall" class="dismiss-btn">✕</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🫧 Bubble Wrap</h1>
+
+            <!-- Stats -->
+            <div class="stats">
+                <span class="counter">Popped: <span id="popCount">0</span>/<span id="totalCount">0</span></span>
+                <span class="lifetime-counter">All Time: <span id="lifetimeCount">0</span></span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+
+            <!-- Timer (for challenge mode) -->
+            <div id="timerDisplay" class="timer hidden">
+                Time: <span id="timerValue">30</span>s
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="resetBtn" class="control-btn reset-btn">🔄 Reset</button>
+            <button id="soundToggle" class="control-btn">🔊 Sound</button>
+            <button id="vibrationToggle" class="control-btn">📳 Vibration</button>
+            <button id="themeBtn" class="control-btn">🎨 Theme</button>
+            <button id="settingsBtn" class="control-btn">⚙️ Settings</button>
+        </div>
+
+        <!-- Bubble Grid -->
+        <div id="bubbleGrid" class="bubble-grid"></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p id="footerText">Tap bubbles to pop them! 🎉</p>
+            <button id="shareBtn" class="share-btn">📤 Share</button>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Settings</h2>
+                <button id="closeSettings" class="close-btn">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Theme Selection -->
+                <div class="setting-group">
+                    <h3>🎨 Theme</h3>
+                    <div class="theme-buttons">
+                        <button class="theme-btn" data-theme="purple">Purple</button>
+                        <button class="theme-btn" data-theme="ocean">Ocean</button>
+                        <button class="theme-btn" data-theme="sunset">Sunset</button>
+                        <button class="theme-btn" data-theme="forest">Forest</button>
+                        <button class="theme-btn" data-theme="dark">Dark</button>
+                    </div>
+                </div>
+
+                <!-- Bubble Size -->
+                <div class="setting-group">
+                    <h3>📏 Bubble Size</h3>
+                    <div class="size-buttons">
+                        <button class="size-btn" data-size="small">Small</button>
+                        <button class="size-btn" data-size="medium">Medium</button>
+                        <button class="size-btn" data-size="large">Large</button>
+                    </div>
+                </div>
+
+                <!-- Game Mode -->
+                <div class="setting-group">
+                    <h3>🎮 Game Mode</h3>
+                    <div class="mode-buttons">
+                        <button class="mode-btn" data-mode="classic">Classic</button>
+                        <button class="mode-btn" data-mode="timed">Timed (30s)</button>
+                        <button class="mode-btn" data-mode="endless">Endless</button>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="setting-group">
+                    <h3>📊 Statistics</h3>
+                    <div class="stats-display">
+                        <p>Total Pops: <strong id="totalPops">0</strong></p>
+                        <p>Games Completed: <strong id="gamesCompleted">0</strong></p>
+                        <p>Best Time: <strong id="bestTime">--</strong></p>
+                        <button id="clearStats" class="clear-stats-btn">Clear Stats</button>
+                    </div>
+                </div>
+
+                <!-- Audio/Vibration -->
+                <div class="setting-group">
+                    <h3>🔊 Preferences</h3>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="soundEnabled" checked>
+                        <span>Sound Effects</span>
+                    </label>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="vibrationEnabled" checked>
+                        <span>Vibration</span>
+                    </label>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="comboEnabled" checked>
+                        <span>Combo Messages</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <script src="game.js"></script>
+</body>
+</html>
