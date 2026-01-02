@@ -4,6 +4,120 @@
 
 class BubbleWrapGame {
     constructor() {
+        // Language translations
+        this.translations = {
+            en: {
+                title: '🫧 Bubble Wrap',
+                popped: 'Popped',
+                allTime: 'All Time',
+                time: 'Time',
+                reset: '🔄 Reset',
+                sound: '🔊 Sound',
+                soundOff: '🔇 Sound',
+                vibration: '📳 Vibration',
+                vibrationOff: '📴 Vibration',
+                theme: '🎨 Theme',
+                settings: '⚙️ Settings',
+                language: '🌐 EN',
+                share: '📤 Share',
+                footerClassic: 'Tap bubbles to pop them! 🎉',
+                footerEndless: 'Endless mode - Bubbles regenerate! 🔄',
+                footerTimed: 'Pop all bubbles before time runs out! ⏱️',
+                settingsTitle: '⚙️ Settings',
+                themeSection: '🎨 Theme',
+                themePurple: 'Purple',
+                themeOcean: 'Ocean',
+                themeSunset: 'Sunset',
+                themeForest: 'Forest',
+                themeDark: 'Dark',
+                sizeSection: '📏 Bubble Size',
+                sizeSmall: 'Small',
+                sizeMedium: 'Medium',
+                sizeLarge: 'Large',
+                modeSection: '🎮 Game Mode',
+                modeClassic: 'Classic',
+                modeTimed: 'Timed (30s)',
+                modeEndless: 'Endless',
+                statsSection: '📊 Statistics',
+                totalPops: 'Total Pops',
+                gamesCompleted: 'Games Completed',
+                bestTime: 'Best Time',
+                clearStats: 'Clear Stats',
+                prefsSection: '🔊 Preferences',
+                soundEffects: 'Sound Effects',
+                vibrationPref: 'Vibration',
+                comboMessages: 'Combo Messages',
+                installTitle: 'Install Bubble Wrap',
+                installDesc: 'Add to home screen for the best experience!',
+                installBtn: 'Install',
+                celebration: '🎉 All Popped! 🎉',
+                completedIn: 'Completed in',
+                timesUp: "Time's up! You popped",
+                perfect: 'Perfect! You popped all',
+                bubbles: 'bubbles',
+                combo5: '🔥 5x Combo!',
+                combo10: '⚡ 10x COMBO! ⚡',
+                combo20: '💥 MEGA COMBO! 💥',
+                shareText: 'I just popped {count} bubbles in Bubble Wrap! 🎉 Can you beat my score?'
+            },
+            zh: {
+                title: '🫧 泡泡膜',
+                popped: '已捏破',
+                allTime: '总计',
+                time: '时间',
+                reset: '🔄 重置',
+                sound: '🔊 声音',
+                soundOff: '🔇 声音',
+                vibration: '📳 震动',
+                vibrationOff: '📴 震动',
+                theme: '🎨 主题',
+                settings: '⚙️ 设置',
+                language: '🌐 中文',
+                share: '📤 分享',
+                footerClassic: '点击泡泡来捏破它们！🎉',
+                footerEndless: '无尽模式 - 泡泡会重新生成！🔄',
+                footerTimed: '在时间用完之前捏破所有泡泡！⏱️',
+                settingsTitle: '⚙️ 设置',
+                themeSection: '🎨 主题',
+                themePurple: '紫色',
+                themeOcean: '海洋',
+                themeSunset: '日落',
+                themeForest: '森林',
+                themeDark: '暗色',
+                sizeSection: '📏 泡泡大小',
+                sizeSmall: '小',
+                sizeMedium: '中',
+                sizeLarge: '大',
+                modeSection: '🎮 游戏模式',
+                modeClassic: '经典',
+                modeTimed: '计时 (30秒)',
+                modeEndless: '无尽',
+                statsSection: '📊 统计',
+                totalPops: '总捏破数',
+                gamesCompleted: '完成游戏数',
+                bestTime: '最佳时间',
+                clearStats: '清除统计',
+                prefsSection: '🔊 偏好设置',
+                soundEffects: '声音效果',
+                vibrationPref: '震动',
+                comboMessages: '连击消息',
+                installTitle: '安装泡泡膜',
+                installDesc: '添加到主屏幕以获得最佳体验！',
+                installBtn: '安装',
+                celebration: '🎉 全部捏破了！🎉',
+                completedIn: '完成时间',
+                timesUp: '时间到！你捏破了',
+                perfect: '完美！你捏破了所有',
+                bubbles: '个泡泡',
+                combo5: '🔥 5连击！',
+                combo10: '⚡ 10连击！⚡',
+                combo20: '💥 超级连击！💥',
+                shareText: '我在泡泡膜游戏中捏破了{count}个泡泡！🎉 你能打败我的分数吗？'
+            }
+        };
+
+        this.currentLang = 'en';
+
         // DOM Elements
         this.bubbleGrid = document.getElementById('bubbleGrid');
         this.popCountElement = document.getElementById('popCount');
@@ -19,6 +133,7 @@ class BubbleWrapGame {
         this.soundToggle = document.getElementById('soundToggle');
         this.vibrationToggle = document.getElementById('vibrationToggle');
         this.themeBtn = document.getElementById('themeBtn');
+        this.languageBtn = document.getElementById('languageBtn');
         this.settingsBtn = document.getElementById('settingsBtn');
         this.shareBtn = document.getElementById('shareBtn');
 
@@ -89,6 +204,7 @@ class BubbleWrapGame {
         this.gameMode = settings.gameMode || 'classic';
         this.bubbleSize = settings.bubbleSize || 'medium';
         this.theme = settings.theme || 'purple';
+        this.currentLang = settings.language || 'en';
 
         const soundEnabled = settings.soundEnabled !== undefined ? settings.soundEnabled : true;
         const vibrationEnabled = settings.vibrationEnabled !== undefined ? settings.vibrationEnabled : true;
@@ -104,6 +220,7 @@ class BubbleWrapGame {
 
         this.updateControlButtons();
         this.updateSettingButtons();
+        this.updateLanguage();
     }
 
     saveSettings() {
@@ -111,6 +228,7 @@ class BubbleWrapGame {
             gameMode: this.gameMode,
             bubbleSize: this.bubbleSize,
             theme: this.theme,
+            language: this.currentLang,
             soundEnabled: this.soundEnabled.checked,
             vibrationEnabled: this.vibrationEnabled.checked,
             comboEnabled: this.comboEnabled.checked
@@ -245,16 +363,17 @@ class BubbleWrapGame {
     handleCombo() {
         const now = Date.now();
         const timeSinceLastPop = now - this.lastPopTime;
+        const t = this.translations[this.currentLang];
 
         if (timeSinceLastPop < 500) { // 500ms window for combos
             this.comboCount++;
 
             if (this.comboCount === 5 && this.comboEnabled.checked) {
-                this.showComboMessage('🔥 5x Combo!');
+                this.showComboMessage(t.combo5);
             } else if (this.comboCount === 10 && this.comboEnabled.checked) {
-                this.showComboMessage('⚡ 10x COMBO! ⚡');
+                this.showComboMessage(t.combo10);
             } else if (this.comboCount === 20 && this.comboEnabled.checked) {
-                this.showComboMessage('💥 MEGA COMBO! 💥');
+                this.showComboMessage(t.combo20);
             }
         } else {
             this.comboCount = 1;
@@ -357,10 +476,11 @@ class BubbleWrapGame {
     endTimedMode() {
         this.stopTimer();
 
+        const t = this.translations[this.currentLang];
         const score = this.popCount;
         const message = score === this.totalBubbles
-            ? `🎉 Perfect! You popped all ${score} bubbles!`
-            : `Time's up! You popped ${score}/${this.totalBubbles} bubbles!`;
+            ? `🎉 ${t.perfect} ${score} ${t.bubbles}!`
+            : `${t.timesUp} ${score}/${this.totalBubbles} ${t.bubbles}!`;
 
         this.showCelebration(message);
 
@@ -388,10 +508,11 @@ class BubbleWrapGame {
         }
         this.saveStats();
 
-        // Show celebration
-        let message = '🎉 All Popped! 🎉';
+        // Show celebration with translation
+        const t = this.translations[this.currentLang];
+        let message = t.celebration;
         if (completionTime) {
-            message = `🎉 Completed in ${completionTime}s! 🎉`;
+            message = `🎉 ${t.completedIn} ${completionTime}s! 🎉`;
         }
 
         this.showCelebration(message);
@@ -515,13 +636,14 @@ class BubbleWrapGame {
         const progress = (this.popCount / this.totalBubbles) * 100;
         this.progressBar.style.width = `${progress}%`;
 
-        // Footer text
+        // Footer text with translation
+        const t = this.translations[this.currentLang];
         if (this.gameMode === 'endless') {
-            this.footerText.textContent = 'Endless mode - Bubbles regenerate! 🔄';
+            this.footerText.textContent = t.footerEndless;
         } else if (this.gameMode === 'timed') {
-            this.footerText.textContent = 'Pop all bubbles before time runs out! ⏱️';
+            this.footerText.textContent = t.footerTimed;
         } else {
-            this.footerText.textContent = 'Tap bubbles to pop them! 🎉';
+            this.footerText.textContent = t.footerClassic;
         }
     }
 
@@ -534,12 +656,14 @@ class BubbleWrapGame {
     }
 
     updateControlButtons() {
+        const t = this.translations[this.currentLang];
+
         // Update sound/vibration button states
         this.soundToggle.classList.toggle('disabled', !this.soundEnabled.checked);
-        this.soundToggle.textContent = this.soundEnabled.checked ? '🔊 Sound' : '🔇 Sound';
+        this.soundToggle.textContent = this.soundEnabled.checked ? t.sound : t.soundOff;
 
         this.vibrationToggle.classList.toggle('disabled', !this.vibrationEnabled.checked);
-        this.vibrationToggle.textContent = this.vibrationEnabled.checked ? '📳 Vibration' : '📴 Vibration';
+        this.vibrationToggle.textContent = this.vibrationEnabled.checked ? t.vibration : t.vibrationOff;
     }
 
     updateSettingButtons() {
@@ -596,13 +720,44 @@ class BubbleWrapGame {
     }
 
     // ============================================
+    // LANGUAGE MANAGEMENT
+    // ============================================
+
+    updateLanguage() {
+        const t = this.translations[this.currentLang];
+
+        // Update all elements with data-i18n attribute
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            if (t[key]) {
+                element.textContent = t[key];
+            }
+        });
+
+        // Update language button text
+        this.languageBtn.textContent = t.language;
+
+        // Update footer text based on game mode
+        this.updateAllDisplays();
+    }
+
+    toggleLanguage() {
+        this.currentLang = this.currentLang === 'en' ? 'zh' : 'en';
+        this.updateLanguage();
+        this.saveSettings();
+    }
+
+    // ============================================
     // SHARE FUNCTIONALITY
     // ============================================
 
     async share() {
+        const t = this.translations[this.currentLang];
+        const shareText = t.shareText.replace('{count}', this.stats.totalPops);
+
         const shareData = {
-            title: 'Bubble Wrap Game',
-            text: `I just popped ${this.stats.totalPops} bubbles in Bubble Wrap! 🎉 Can you beat my score?`,
+            title: t.title,
+            text: shareText,
             url: window.location.href
         };
 
@@ -687,6 +842,11 @@ class BubbleWrapGame {
             const currentIndex = themes.indexOf(this.theme);
             const nextIndex = (currentIndex + 1) % themes.length;
             this.changeTheme(themes[nextIndex]);
+        });
+
+        // Language button
+        this.languageBtn.addEventListener('click', () => {
+            this.toggleLanguage();
         });
 
         // Settings button
