@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Wrap Icon Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .instructions {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .instructions h2 {
+            margin-top: 0;
+            color: #667eea;
+        }
+
+        .instructions ol {
+            line-height: 1.8;
+        }
+
+        .icon-preview {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .icon-box {
+            text-align: center;
+        }
+
+        .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            margin: 0 auto 10px;
+            position: relative;
+        }
+
+        .icon-192 {
+            width: 192px;
+            height: 192px;
+        }
+
+        .icon-512 {
+            width: 512px;
+            height: 512px;
+        }
+
+        .icon-content {
+            text-align: center;
+        }
+
+        .bubble-emoji {
+            font-size: 120px;
+            line-height: 1;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .bubble-emoji-large {
+            font-size: 320px;
+        }
+
+        .icon-text {
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+            margin-top: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon-text-large {
+            font-size: 64px;
+            margin-top: 20px;
+        }
+
+        .label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .controls h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        input[type="color"] {
+            width: 60px;
+            height: 40px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .color-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        #download-section {
+            display: none;
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #download-section.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🫧 Bubble Wrap Icon Generator</h1>
+
+        <div class="instructions">
+            <h2>Instructions:</h2>
+            <ol>
+                <li>Review the icon designs below</li>
+                <li>Customize colors if needed (optional)</li>
+                <li>Right-click each icon → "Save image as..."</li>
+                <li>Save the 192x192 icon as: <strong>icon-192.png</strong></li>
+                <li>Save the 512x512 icon as: <strong>icon-512.png</strong></li>
+                <li>Save both to: <code>C:\cursor projects\bubble-wrap-game\</code></li>
+            </ol>
+        </div>
+
+        <div class="controls">
+            <h3>Customize Icon</h3>
+            <div class="color-control">
+                <label>Background Gradient Start:</label>
+                <input type="color" id="color1" value="#667eea">
+            </div>
+            <div class="color-control">
+                <label>Background Gradient End:</label>
+                <input type="color" id="color2" value="#764ba2">
+            </div>
+            <button onclick="updateColors()">Apply Colors</button>
+            <button onclick="resetColors()">Reset to Default</button>
+        </div>
+
+        <h2 style="text-align: center; margin-top: 40px;">Icon Previews</h2>
+
+        <div class="icon-preview">
+            <!-- 192x192 Icon -->
+            <div class="icon-box">
+                <canvas id="canvas-192" class="icon icon-192"></canvas>
+                <div class="label">192 x 192 pixels</div>
+                <button onclick="downloadIcon(192)">Download 192x192</button>
+            </div>
+
+            <!-- 512x512 Icon -->
+            <div class="icon-box">
+                <canvas id="canvas-512" class="icon icon-512"></canvas>
+                <div class="label">512 x 512 pixels</div>
+                <button onclick="downloadIcon(512)">Download 512x512</button>
+            </div>
+        </div>
+
+        <div id="download-section">
+            <h3>✅ Icons Ready!</h3>
+            <p>Your icons have been downloaded. Make sure to:</p>
+            <ul>
+                <li>Save <strong>icon-192.png</strong> in the bubble-wrap-game folder</li>
+                <li>Save <strong>icon-512.png</strong> in the bubble-wrap-game folder</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let color1 = '#667eea';
+        let color2 = '#764ba2';
+
+        function drawIcon(size) {
+            const canvas = document.getElementById(`canvas-${size}`);
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas dimensions
+            canvas.width = size;
+            canvas.height = size;
+
+            // Create gradient background
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, color1);
+            gradient.addColorStop(1, color2);
+
+            // Draw rounded rectangle background
+            const radius = size * 0.2;
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+
+            // Draw bubble emoji
+            const fontSize = size === 192 ? 120 : 320;
+            ctx.font = `${fontSize}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Add text shadow
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 4;
+
+            ctx.fillStyle = 'white';
+            ctx.fillText('🫧', size / 2, size / 2 - size * 0.05);
+
+            // Reset shadow
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
+            // Draw text "Bubble Wrap"
+            const textSize = size === 192 ? 20 : 54;
+            ctx.font = `bold ${textSize}px Arial`;
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetY = 2;
+            ctx.fillStyle = 'white';
+            ctx.fillText('Bubble', size / 2, size / 2 + size * 0.22);
+            ctx.fillText('Wrap', size / 2, size / 2 + size * 0.32);
+        }
+
+        function updateColors() {
+            color1 = document.getElementById('color1').value;
+            color2 = document.getElementById('color2').value;
+            drawIcon(192);
+            drawIcon(512);
+        }
+
+        function resetColors() {
+            color1 = '#667eea';
+            color2 = '#764ba2';
+            document.getElementById('color1').value = color1;
+            document.getElementById('color2').value = color2;
+            drawIcon(192);
+            drawIcon(512);
+        }
+
+        function downloadIcon(size) {
+            const canvas = document.getElementById(`canvas-${size}`);
+            const link = document.createElement('a');
+            link.download = `icon-${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            document.getElementById('download-section').classList.add('show');
+        }
+
+        // Initialize icons on page load
+        window.onload = function() {
+            drawIcon(192);
+            drawIcon(512);
+        };
+    </script>
+</body>
+</html>
