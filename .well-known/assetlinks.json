@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.ella202002.twa",
+        "sha256_cert_fingerprints": ["1C:A1:B5:49:59:D6:21:B2:6C:B8:06:CB:BE:32:98:9D:99:D1:AE:04:3C:83:90:31:D1:6C:C5:B8:C7:56:B5:53"]
+      }
+    }]
