@@ -3,7 +3,7 @@
   "short_name": "Bubble Wrap",
   "description": "Pop bubbles and relax! A satisfying bubble wrap popping game.",
   "start_url": "./index.html",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#667eea",
   "theme_color": "#667eea",
   "orientation": "portrait",
