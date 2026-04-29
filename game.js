@@ -164,6 +164,12 @@ class BubbleWrapGame {
         this.bubbleSize = 'medium'; // small, medium, large
         this.theme = 'purple';
 
+        // Grid dimensions (initialized in calculateTotalBubbles)
+        this.gridColumns = 10;
+        this.gridRows = 6;
+        this.bubbleSize_px = 55;
+        this.gridGap = 8;
+
         // Audio Context (reused for all sounds)
         this.audioContext = null;
 
@@ -259,44 +265,51 @@ class BubbleWrapGame {
         const width = window.innerWidth;
         const height = window.innerHeight;
 
-        // Calculate available height for bubble grid
-        // Account for: header (~180px), controls (~80px), footer (~80px), padding (~60px)
-        const reservedHeight = 400; // Total reserved space for UI elements
+        // Measure actual UI element heights dynamically
+        const header = document.querySelector('.header');
+        const controls = document.querySelector('.controls');
+        const footer = document.querySelector('.footer');
+
+        const headerHeight = header ? header.offsetHeight : 180;
+        const controlsHeight = controls ? controls.offsetHeight : 100;
+        const footerHeight = footer ? footer.offsetHeight : 80;
+        const containerPadding = 30; // Container top/bottom padding
+
+        const reservedHeight = headerHeight + controlsHeight + footerHeight + containerPadding;
         const availableHeight = height - reservedHeight;
 
-        let columns, bubbleSize, gap;
+        let columns, bubbleSize, gap, gridPadding;
 
         // Determine bubble size and gap based on settings
         if (this.bubbleSize === 'small') {
             if (width <= 480) {
-                bubbleSize = 38; gap = 4; columns = 6;
+                bubbleSize = 38; gap = 4; columns = 6; gridPadding = 12;
             } else if (width <= 768) {
-                bubbleSize = 40; gap = 5; columns = 7;
+                bubbleSize = 40; gap = 5; columns = 7; gridPadding = 12;
             } else {
-                bubbleSize = 42; gap = 6; columns = 12;
+                bubbleSize = 42; gap = 6; columns = 12; gridPadding = 12;
             }
         } else if (this.bubbleSize === 'large') {
             if (width <= 480) {
-                bubbleSize = 55; gap = 6; columns = 4;
+                bubbleSize = 55; gap = 6; columns = 4; gridPadding = 15;
             } else if (width <= 768) {
-                bubbleSize = 58; gap = 7; columns = 5;
+                bubbleSize = 58; gap = 7; columns = 5; gridPadding = 15;
             } else {
-                bubbleSize = 65; gap = 10; columns = 8;
+                bubbleSize = 65; gap = 10; columns = 8; gridPadding = 15;
             }
         } else { // medium (default)
             if (width <= 480) {
-                bubbleSize = 48; gap = 5; columns = 5;
+                bubbleSize = 48; gap = 5; columns = 5; gridPadding = 10;
             } else if (width <= 768) {
-                bubbleSize = 50; gap = 6; columns = 6;
+                bubbleSize = 50; gap = 6; columns = 6; gridPadding = 12;
             } else if (width <= 1024) {
-                bubbleSize = 54; gap = 7; columns = 8;
+                bubbleSize = 54; gap = 7; columns = 8; gridPadding = 15;
             } else {
-                bubbleSize = 55; gap = 8; columns = 10;
+                bubbleSize = 55; gap = 8; columns = 10; gridPadding = 15;
             }
         }
 
         // Calculate maximum rows that fit without cutting off
-        const gridPadding = 20; // Padding inside bubble-grid container
         const effectiveHeight = availableHeight - (gridPadding * 2);
         const maxRows = Math.floor(effectiveHeight / (bubbleSize + gap));
 
@@ -309,12 +322,15 @@ class BubbleWrapGame {
         // Store for CSS updates
         this.gridColumns = columns;
         this.gridRows = rows;
+        this.bubbleSize_px = bubbleSize;
+        this.gridGap = gap;
     }
 
     createBubbles() {
-        // Update grid layout dynamically
-        this.bubbleGrid.style.gridTemplateColumns = `repeat(${this.gridColumns}, 1fr)`;
-        this.bubbleGrid.style.gridTemplateRows = `repeat(${this.gridRows}, 1fr)`;
+        // Update grid layout dynamically with exact pixel values
+        this.bubbleGrid.style.gridTemplateColumns = `repeat(${this.gridColumns}, ${this.bubbleSize_px}px)`;
+        this.bubbleGrid.style.gridTemplateRows = `repeat(${this.gridRows}, ${this.bubbleSize_px}px)`;
+        this.bubbleGrid.style.gap = `${this.gridGap}px`;
 
         // Clear existing bubbles
         this.bubbleGrid.innerHTML = '';

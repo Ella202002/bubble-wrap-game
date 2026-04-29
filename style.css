@@ -189,8 +189,8 @@ body {
 /* Bubble Grid */
 .bubble-grid {
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(6, 1fr);
+    grid-template-columns: repeat(10, 55px);
+    grid-template-rows: repeat(6, 55px);
     gap: 8px;
     justify-content: center;
     align-content: start;
@@ -203,7 +203,6 @@ body {
     animation: slideUp 0.5s ease-out;
     width: fit-content;
     margin: 0 auto;
-    max-height: calc(100vh - 400px);
 }
 
 body[data-size="small"] .bubble-grid {
