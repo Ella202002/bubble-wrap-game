@@ -196,6 +196,7 @@ class BubbleWrapGame {
         this.setupPWA();
         this.updateTheme();
         this.resizeConfettiCanvas();
+        this.initAds();
     }
 
     loadSettings() {
@@ -256,42 +257,65 @@ class BubbleWrapGame {
 
     calculateTotalBubbles() {
         const width = window.innerWidth;
+        const height = window.innerHeight;
 
-        let columns, rows;
+        // Calculate available height for bubble grid
+        // Account for: header (~180px), controls (~80px), footer (~80px), padding (~60px)
+        const reservedHeight = 400; // Total reserved space for UI elements
+        const availableHeight = height - reservedHeight;
 
+        let columns, bubbleSize, gap;
+
+        // Determine bubble size and gap based on settings
         if (this.bubbleSize === 'small') {
             if (width <= 480) {
-                columns = 6; rows = 12; // 72 bubbles
+                bubbleSize = 38; gap = 4; columns = 6;
             } else if (width <= 768) {
-                columns = 7; rows = 10; // 70 bubbles
+                bubbleSize = 40; gap = 5; columns = 7;
             } else {
-                columns = 12; rows = 8; // 96 bubbles
+                bubbleSize = 42; gap = 6; columns = 12;
             }
         } else if (this.bubbleSize === 'large') {
             if (width <= 480) {
-                columns = 4; rows = 8; // 32 bubbles
+                bubbleSize = 55; gap = 6; columns = 4;
             } else if (width <= 768) {
-                columns = 5; rows = 7; // 35 bubbles
+                bubbleSize = 58; gap = 7; columns = 5;
             } else {
-                columns = 8; rows = 5; // 40 bubbles
+                bubbleSize = 65; gap = 10; columns = 8;
             }
         } else { // medium (default)
             if (width <= 480) {
-                columns = 5; rows = 9; // 45 bubbles
+                bubbleSize = 48; gap = 5; columns = 5;
             } else if (width <= 768) {
-                columns = 6; rows = 8; // 48 bubbles
+                bubbleSize = 50; gap = 6; columns = 6;
             } else if (width <= 1024) {
-                columns = 8; rows = 7; // 56 bubbles
+                bubbleSize = 54; gap = 7; columns = 8;
             } else {
-                columns = 10; rows = 6; // 60 bubbles
+                bubbleSize = 55; gap = 8; columns = 10;
             }
         }
 
+        // Calculate maximum rows that fit without cutting off
+        const gridPadding = 20; // Padding inside bubble-grid container
+        const effectiveHeight = availableHeight - (gridPadding * 2);
+        const maxRows = Math.floor(effectiveHeight / (bubbleSize + gap));
+
+        // Ensure at least 5 rows, but cap based on available space
+        const rows = Math.max(5, Math.min(maxRows, 12));
+
         this.totalBubbles = columns * rows;
         this.totalCountElement.textContent = this.totalBubbles;
+
+        // Store for CSS updates
+        this.gridColumns = columns;
+        this.gridRows = rows;
     }
 
     createBubbles() {
+        // Update grid layout dynamically
+        this.bubbleGrid.style.gridTemplateColumns = `repeat(${this.gridColumns}, 1fr)`;
+        this.bubbleGrid.style.gridTemplateRows = `repeat(${this.gridRows}, 1fr)`;
+
         // Clear existing bubbles
         this.bubbleGrid.innerHTML = '';
 
@@ -517,6 +541,12 @@ class BubbleWrapGame {
 
         this.showCelebration(message);
         this.launchConfetti();
+
+        // Show interstitial ad every few completions
+        this.gamesPlayed++;
+        if (this.gamesPlayed % this.interstitialFrequency === 0) {
+            this.showInterstitialAd();
+        }
     }
 
     showCelebration(text) {
@@ -774,6 +804,45 @@ class BubbleWrapGame {
                 alert('Link copied to clipboard!');
             });
         }
+    }
+
+    // ============================================
+    // AD MONETIZATION (AdMob/AdSense)
+    // ============================================
+
+    initAds() {
+        // Initialize AdSense/AdMob ads
+        // Wait a bit for the page to load
+        setTimeout(() => {
+            try {
+                // Load top banner ad
+                const topAd = document.querySelector('#topBannerAd .adsbygoogle');
+                if (topAd && !topAd.hasAttribute('data-adsbygoogle-status')) {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                }
+
+                // Load bottom banner ad
+                const bottomAd = document.querySelector('#bottomBannerAd .adsbygoogle');
+                if (bottomAd && !bottomAd.hasAttribute('data-adsbygoogle-status')) {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                }
+            } catch (e) {
+                console.log('Ads not loaded:', e);
+            }
+        }, 1000);
+
+        // Track ad impressions for completion
+        this.gamesPlayed = 0;
+        this.interstitialFrequency = 3; // Show interstitial every 3 game completions
+    }
+
+    showInterstitialAd() {
+        // This will show an interstitial ad after certain game completions
+        // For now, this is a placeholder for future interstitial implementation
+        console.log('Interstitial ad trigger point');
+
+        // TODO: Implement actual interstitial ad when using AdMob for Android
+        // or when using Google Ad Manager for web
     }
 
     // ============================================

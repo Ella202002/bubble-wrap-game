@@ -189,10 +189,11 @@ body {
 /* Bubble Grid */
 .bubble-grid {
     display: grid;
-    grid-template-columns: repeat(10, 55px);
-    grid-template-rows: repeat(6, 55px);
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(6, 1fr);
     gap: 8px;
     justify-content: center;
+    align-content: start;
     background: rgba(255, 255, 255, 0.1);
     padding: 15px;
     border-radius: 20px;
@@ -200,18 +201,17 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     animation: slideUp 0.5s ease-out;
+    width: fit-content;
+    margin: 0 auto;
+    max-height: calc(100vh - 400px);
 }
 
 body[data-size="small"] .bubble-grid {
-    grid-template-columns: repeat(12, 42px);
-    grid-template-rows: repeat(8, 42px);
-    gap: 6px;
+    gap: 4px;
     padding: 12px;
 }
 
 body[data-size="large"] .bubble-grid {
-    grid-template-columns: repeat(8, 65px);
-    grid-template-rows: repeat(5, 65px);
     gap: 10px;
     padding: 15px;
 }
@@ -610,6 +610,57 @@ body[data-size="large"] .bubble {
     display: none !important;
 }
 
+/* ============================================
+   AD BANNER STYLING
+   ============================================ */
+
+.banner-ad-container {
+    width: 100%;
+    max-width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 8px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+#topBannerAd {
+    position: sticky;
+    top: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#bottomBannerAd {
+    position: sticky;
+    bottom: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.banner-ad-container .adsbygoogle {
+    display: block;
+    min-height: 50px;
+    max-width: 100%;
+}
+
+/* Ad container responsive sizing */
+@media (max-width: 768px) {
+    .banner-ad-container {
+        padding: 5px 0;
+    }
+
+    .banner-ad-container .adsbygoogle {
+        min-height: 50px; /* Mobile banner standard height */
+    }
+}
+
+@media (min-width: 769px) {
+    .banner-ad-container .adsbygoogle {
+        min-height: 90px; /* Desktop leaderboard standard height */
+    }
+}
+
 /* Mobile Optimizations */
 @media (max-width: 768px) {
     .header h1 {
@@ -618,8 +669,6 @@ body[data-size="large"] .bubble {
     }
 
     .bubble-grid {
-        grid-template-columns: repeat(6, 50px);
-        grid-template-rows: repeat(8, 50px);
         gap: 6px;
         padding: 12px;
     }
@@ -630,8 +679,6 @@ body[data-size="large"] .bubble {
     }
 
     body[data-size="small"] .bubble-grid {
-        grid-template-columns: repeat(7, 40px);
-        grid-template-rows: repeat(10, 40px);
         gap: 5px;
     }
 
@@ -641,8 +688,6 @@ body[data-size="large"] .bubble {
     }
 
     body[data-size="large"] .bubble-grid {
-        grid-template-columns: repeat(5, 58px);
-        grid-template-rows: repeat(7, 58px);
         gap: 7px;
     }
 
@@ -672,8 +717,6 @@ body[data-size="large"] .bubble {
     }
 
     .bubble-grid {
-        grid-template-columns: repeat(5, 48px);
-        grid-template-rows: repeat(9, 48px);
         gap: 5px;
         padding: 10px;
     }
@@ -684,8 +727,6 @@ body[data-size="large"] .bubble {
     }
 
     body[data-size="small"] .bubble-grid {
-        grid-template-columns: repeat(6, 38px);
-        grid-template-rows: repeat(12, 38px);
         gap: 4px;
     }
 
@@ -695,8 +736,6 @@ body[data-size="large"] .bubble {
     }
 
     body[data-size="large"] .bubble-grid {
-        grid-template-columns: repeat(4, 55px);
-        grid-template-rows: repeat(8, 55px);
         gap: 6px;
     }
 
@@ -709,8 +748,6 @@ body[data-size="large"] .bubble {
 /* Tablet Optimizations */
 @media (min-width: 769px) and (max-width: 1024px) {
     .bubble-grid {
-        grid-template-columns: repeat(8, 54px);
-        grid-template-rows: repeat(7, 54px);
         gap: 7px;
     }
 
